@@ -1,0 +1,8 @@
+NEW_UPDATE       = "A new version of iTRC is available";
+NO_NEW_UPDATE    = "Your version of iTRC is up to date";
+ITUNES_OPEN      = "iTunes Is Not Open";
+ITUNES_OPEN_TEXT = "iTunes is not open on the remote machine. Would you like to open it now?";
+OPEN_BUTTON      = "Open";
+CANCEL_BUTTON    = "Cancel";
+OKAY_BUTTON      = "Okay";
+STAR             = "★";
