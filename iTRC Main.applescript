@@ -617,7 +617,7 @@ on trackChangeGrowl(artistName, trackName, albumName)
 	try
 		if my checkForGrowl() is not 0 then
 			using terms from application "GrowlHelperApp"
-				tell application "GrowlHelperApp" to notify with name "Track Changed" title trackName application name "iTunes Remote Control" description artistName & "
+				tell application "GrowlHelperApp" to notify with name "Track Changed" title trackName application name "iTunes Remote Control" identifier "iTRC" description artistName & "
 " & albumName
 			end using terms from
 		end if
