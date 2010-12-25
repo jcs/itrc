@@ -4,6 +4,8 @@ fork of [iTunes Remote Control](http://www.them.ws/itrc/) with bug fixes and new
 
 maintained by [joshua stein](http://jcs.org/)
 
+latest binary download: [https://github.com/downloads/jcs/itrc/iTRC.zip](https://github.com/downloads/jcs/itrc/iTRC.zip)
+
 bug fixes:
 	- fixed a bug on machines with no mute/volume controls (when using digital
 	  audio output) which caused unrelated errors about undefined variables to
