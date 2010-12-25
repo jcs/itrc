@@ -53,6 +53,10 @@ on clicked theObject
 			my skipTrack("prev")
 		else if name of theObject is "but-next" then
 			my skipTrack("next")
+		else if name of theObject is "but-prevalbum" then
+			my skipAlbum("prev")
+		else if name of theObject is "but-nextalbum" then
+			my skipAlbum("next")
 		else if name of theObject is "but-mute" then
 			my muteiTunes()
 		else if name of theObject is "but-shuffle" then
@@ -66,9 +70,9 @@ on clicked theObject
 		else if name of theObject is "but-eq" then
 			my setEQState(state of theObject)
 		else if name of theObject is "but-play" then
-			if title of theObject is "Play" then
+			if title of theObject is "I>" then
 				my playTrack(true)
-			else if title of theObject is "Pause" then
+			else if title of theObject is "II" then
 				my playTrack(false)
 			end if
 		end if
@@ -281,11 +285,11 @@ on playTrack(playingState) -- playingState true=playing false=paused/stopped
 		tell application "iTunes" of machine fullMachineURI to playpause
 	end using terms from
 	if playingState is true then
-		set title of button "but-play" of window "win-main" to "Pause"
+		set title of button "but-play" of window "win-main" to "II"
 		set title of menu item "mi-play" of popup button "menu-dock" of window "win-hiden" to "Pause"
 		my setState()
 	else if playingState is false then
-		set title of button "but-play" of window "win-main" to "Play"
+		set title of button "but-play" of window "win-main" to "I>"
 		set title of menu item "mi-play" of popup button "menu-dock" of window "win-hiden" to "Play"
 	end if
 end playTrack
@@ -294,7 +298,7 @@ on stopTrack()
 	using terms from application "iTunes"
 		tell application "iTunes" of machine fullMachineURI to stop
 	end using terms from
-	set title of button "but-play" of window "win-main" to "Play"
+	set title of button "but-play" of window "win-main" to "I>"
 end stopTrack
 
 on skipTrack(direction) -- direction next=skip forward prev=skip backward
@@ -319,6 +323,48 @@ on skipTrack(direction) -- direction next=skip forward prev=skip backward
 end skipTrack
 
 (* END TRACK CONTROL FUNCTIONS *)
+
+(* BEGIN ALBUM CONTROL FUNCTIONS *)
+
+on skipAlbum(direction) -- direction next=skip forward prev=skip backward
+	using terms from application "iTunes"
+		tell application "iTunes" of machine fullMachineURI
+			set currentAlbum to the album of the current track
+			if player state is playing then
+				set wasPlaying to true
+				pause
+			else
+				set wasPlaying to false
+			end if
+			
+			repeat while the album of the current track is equal to currentAlbum
+				if direction is "next" then
+					next track
+				else if direction is "prev" then
+					back track
+				end if
+			end repeat
+			
+			-- for skipping back an album, we're now at the last track of this previous album,
+			-- so go back again, then forward one 
+			if direction is "prev" then
+				set currentAlbum to the album of the current track
+				repeat while the album of the current track is equal to currentAlbum
+					back track
+				end repeat
+				next track
+			end if
+			
+			if wasPlaying is true then
+				play
+			end if
+		end tell
+	end using terms from
+	my setState()
+	set contents of progress indicator "pi-dur" of window "win-main" to 0
+end skipAlbum
+
+(* END ALBUM CONTROL FUNCTIONS *)
 
 (* BEGIN ITUNES CONTROL FUNCTIONS *)
 
@@ -379,14 +425,14 @@ end switchEQ
 on setState()
 	set iTunesInfo to my getiTunesInfo()
 	if currentState of iTunesInfo is "playing" then
-		set title of button "but-play" of window "win-main" to "Pause"
+		set title of button "but-play" of window "win-main" to "II"
 		set title of menu item "mi-play" of popup button "menu-dock" of window "win-hiden" to "Pause"
 		my trackInfo(iTunesInfo)
 	else if currentState of iTunesInfo is "paused" then
-		set title of button "but-play" of window "win-main" to "Play"
+		set title of button "but-play" of window "win-main" to "I>"
 		set title of menu item "mi-play" of popup button "menu-dock" of window "win-hiden" to "Play"
 	else if currentState of iTunesInfo is "stopped" then
-		set title of button "but-play" of window "win-main" to "Play"
+		set title of button "but-play" of window "win-main" to "I>"
 		set title of menu item "mi-play" of popup button "menu-dock" of window "win-hiden" to "Play"
 		set title of window "win-main" to "iTunes Remote Control"
 	end if
@@ -414,63 +460,67 @@ on setState()
 end setState
 
 on getiTunesInfo()
-	try
-		set theList to {}
-		using terms from application "iTunes"
-			tell application "iTunes" of machine fullMachineURI
-				if player state is playing then
-					set currentState to "playing"
-					set currentSongRate to rating of current track
-					set songID to get index of current track
-					set currentSongPosition to player position
-					set artistName to artist of current track
-					set trackName to name of current track
-					set albumName to album of current track
-					set trackDur to duration of current track
-				else if player state is paused then
-					set currentState to "paused"
-					set currentSongRate to rating of current track
-					set songID to get index of current track
-					set currentSongPosition to player position
-					set artistName to artist of current track
-					set trackName to name of current track
-					set albumName to album of current track
-					set trackDur to duration of current track
-				else if player state is stopped then
-					set currentState to "stopped"
-					set currentSongStar to "0"
-					set songID to 1
-					set currentSongPosition to "0"
-					set artistName to ""
-					set trackName to ""
-					set albumName to ""
-					set trackDur to 0
-				end if
-				
-				set currentPlaylist to name of view of first browser window
-				set shuffleState to shuffle of view of first browser window
-				set muteState to mute
-				set currentVolume to sound volume
-				set currentEQ to name of current EQ preset
-				set eqState to EQ enabled
+	set theList to {}
+	using terms from application "iTunes"
+		tell application "iTunes" of machine fullMachineURI
+			if player state is playing then
+				set currentState to "playing"
+				set currentSongRate to rating of current track
+				set songID to get index of current track
+				set currentSongPosition to player position
+				set artistName to artist of current track
+				set trackName to name of current track
+				set albumName to album of current track
+				set trackDur to duration of current track
+			else if player state is paused then
+				set currentState to "paused"
+				set currentSongRate to rating of current track
+				set songID to get index of current track
+				set currentSongPosition to player position
+				set artistName to artist of current track
+				set trackName to name of current track
+				set albumName to album of current track
+				set trackDur to duration of current track
+			else if player state is stopped then
+				set currentState to "stopped"
+				set currentSongStar to "0"
+				set songID to 1
+				set currentSongPosition to "0"
+				set artistName to ""
+				set trackName to ""
+				set albumName to ""
+				set trackDur to 0
+			end if
+			
+			set currentPlaylist to name of view of first browser window
+			set shuffleState to shuffle of view of first browser window
+			set muteState to mute
+			set currentVolume to sound volume
+			set currentEQ to name of current EQ preset
+			set eqState to EQ enabled
+			set computerMuted to 0
+			
+			-- this fails when the computer is using digital audio output and has no volume control 
+			try
 				set computerMuted to output muted of (get volume settings) as integer
-			end tell
-		end using terms from
-		
-		if currentSongRate is 20 then
-			set currentSongStar to "1"
-		else if currentSongRate is 40 then
-			set currentSongStar to "2"
-		else if currentSongRate is 60 then
-			set currentSongStar to "3"
-		else if currentSongRate is 80 then
-			set currentSongStar to "4"
-		else if currentSongRate is 100 then
-			set currentSongStar to "5"
-		else
-			set currentSongStar to "0"
-		end if
-	end try
+			end try
+		end tell
+	end using terms from
+	
+	if currentSongRate is 20 then
+		set currentSongStar to "1"
+	else if currentSongRate is 40 then
+		set currentSongStar to "2"
+	else if currentSongRate is 60 then
+		set currentSongStar to "3"
+	else if currentSongRate is 80 then
+		set currentSongStar to "4"
+	else if currentSongRate is 100 then
+		set currentSongStar to "5"
+	else
+		set currentSongStar to "0"
+	end if
+	
 	set theList to {currentState:currentState, currentPlaylist:currentPlaylist, shuffleState:shuffleState, currentSongPosition:currentSongPosition, currentSongStar:currentSongStar, muteState:muteState, currentVolume:currentVolume, currentEQ:currentEQ, songID:songID, eqState:eqState, computerMuted:computerMuted, artistName:artistName, trackName:trackName, albumName:albumName, trackDur:trackDur}
 	return theList
 end getiTunesInfo
