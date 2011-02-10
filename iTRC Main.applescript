@@ -461,6 +461,16 @@ end setState
 
 on getiTunesInfo()
 	set theList to {}
+	set currentState to "stopped"
+	set currentSongStar to "0"
+	set currentSongRate to 0
+	set songID to 1
+	set currentSongPosition to "0"
+	set artistName to ""
+	set trackName to ""
+	set albumName to ""
+	set trackDur to 0
+	
 	using terms from application "iTunes"
 		tell application "iTunes" of machine fullMachineURI
 			if player state is playing then
@@ -481,15 +491,6 @@ on getiTunesInfo()
 				set trackName to name of current track
 				set albumName to album of current track
 				set trackDur to duration of current track
-			else if player state is stopped then
-				set currentState to "stopped"
-				set currentSongStar to "0"
-				set songID to 1
-				set currentSongPosition to "0"
-				set artistName to ""
-				set trackName to ""
-				set albumName to ""
-				set trackDur to 0
 			end if
 			
 			set currentPlaylist to name of view of first browser window
@@ -532,7 +533,11 @@ on trackInfo(cachedTrackInfo)
 	set contents of text field "tf-artist" of window "win-main" to artistName of cachedTrackInfo
 	set contents of text field "tf-title" of window "win-main" to trackName of cachedTrackInfo
 	set contents of text field "tf-album" of window "win-main" to albumName of cachedTrackInfo
-	set title of window "win-main" to "< " & artistName of cachedTrackInfo & " - " & trackName of cachedTrackInfo & " >"
+	try
+		set title of window "win-main" to artistName of cachedTrackInfo & " - " & trackName of cachedTrackInfo
+	on error
+		set title of window "win-main" to "Unknown"
+	end try
 	set tool tip of text field "tf-artist" of window "win-main" to artistName of cachedTrackInfo
 	set tool tip of text field "tf-title" of window "win-main" to trackName of cachedTrackInfo
 	set tool tip of text field "tf-album" of window "win-main" to albumName of cachedTrackInfo
