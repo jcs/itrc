@@ -270,9 +270,22 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1AFF60FF08AABB5700E268BC /* Debug */ = {
+		01D5EAEE130451C8004A2A18 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
+				GCC_MODEL_TUNING = "";
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				VALID_ARCHS = "i386 x86_64";
+			};
+			name = Debug;
+		};
+		01D5EAEF130451C8004A2A18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -281,9 +294,8 @@
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)\"";
-				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -293,12 +305,14 @@
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
+				OTHER_OSAFLAGS = "-x";
 				PREBINDING = NO;
-				PRODUCT_NAME = RemoteTunes;
+				PRODUCT_NAME = iTRC;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
+				ZERO_LINK = NO;
 			};
 			name = Debug;
 		};
@@ -361,12 +375,6 @@
 			};
 			name = Default;
 		};
-		1AFF610308AABB5700E268BC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug;
-		};
 		1AFF610408AABB5700E268BC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -390,7 +398,7 @@
 		1AFF60FE08AABB5700E268BC /* Build configuration list for PBXNativeTarget "iTRC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1AFF60FF08AABB5700E268BC /* Debug */,
+				01D5EAEF130451C8004A2A18 /* Debug */,
 				1AFF610008AABB5700E268BC /* Release */,
 				1AFF610108AABB5700E268BC /* Default */,
 			);
@@ -400,7 +408,7 @@
 		1AFF610208AABB5700E268BC /* Build configuration list for PBXProject "RemoteTunes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1AFF610308AABB5700E268BC /* Debug */,
+				01D5EAEE130451C8004A2A18 /* Debug */,
 				1AFF610408AABB5700E268BC /* Release */,
 				1AFF610508AABB5700E268BC /* Default */,
 			);
