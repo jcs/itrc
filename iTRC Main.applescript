@@ -544,7 +544,7 @@ on trackInfo(cachedTrackInfo)
 	set enabled of menu item "mi-artist" of popup button "menu-dock" of window "win-hiden" to false
 	set title of menu item "mi-artist" of popup button "menu-dock" of window "win-hiden" to artistName of cachedTrackInfo & " - " & trackName of cachedTrackInfo
 	if newTrackID is not oldTrackID then
-		my trackChangeGrowl(artistName of cachedTrackInfo, trackName of cachedTrackInfo, albumName of cachedTrackInfo)
+		my trackChangeGrowl(artistName of cachedTrackInfo, trackName of cachedTrackInfo, albumName of cachedTrackInfo, currentSongStar of cachedTrackInfo)
 	end if
 end trackInfo
 
@@ -668,12 +668,22 @@ on registerGrowl()
 	end try
 end registerGrowl
 
-on trackChangeGrowl(artistName, trackName, albumName)
+on trackChangeGrowl(artistName, trackName, albumName, trackStars)
 	try
 		if my checkForGrowl() is not 0 then
+			if trackStars is "0" then
+				set starsLabel to ""
+			else
+				set starsLabel to "
+"
+				repeat with i from 1 to trackStars
+					set starsLabel to starsLabel & "★"
+				end repeat
+			end if
+			
 			using terms from application "GrowlHelperApp"
 				tell application "GrowlHelperApp" to notify with name "Track Changed" title trackName application name "iTunes Remote Control" identifier "iTRC" description artistName & "
-" & albumName
+" & albumName & starsLabel
 			end using terms from
 		end if
 	end try
